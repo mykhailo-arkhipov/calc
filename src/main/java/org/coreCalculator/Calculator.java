@@ -17,7 +17,7 @@ public class Calculator {
     static Map<String, Integer> romanToArabic = new HashMap<>();
 
     static {
-                //1-10, 10-90 и 100 (для случая 10*10)
+                // 1-10, 10-90 и 100 (для случая 10*10)
         romanToArabic.put("I", 1);
         romanToArabic.put("II", 2);
         romanToArabic.put("III", 3);
