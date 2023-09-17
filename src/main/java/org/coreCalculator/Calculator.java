@@ -1,5 +1,4 @@
-package org.example;
-
+package org.coreCalculator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,16 +13,11 @@ import java.util.Map;
 - Класс CalcThread - поток для чтения и вызова Solution.calc() и выброса исключения
  */
 
-
-
-
 public class Calculator {
-
     static Map<String, Integer> romanToArabic = new HashMap<>();
 
     static {
-        // забиваем мапу для (имхо) наиболее оптимальной конвертации -
-        // 1-10, 10-90 и 100 (для случая 10*10)
+                //1-10, 10-90 и 100 (для случая 10*10)
         romanToArabic.put("I", 1);
         romanToArabic.put("II", 2);
         romanToArabic.put("III", 3);
@@ -46,14 +40,13 @@ public class Calculator {
     }
 
     public static void main(String[] args) {
-
+                // запускаем поток, рекурсивно вызывающий calc()
         Thread calcProcessThread = new Thread(new CalcThread());
         calcProcessThread.start();
-
     }
     public static String calc(String input) {
-
-        int a, b, res; // первое число, второе, результат
+                // первое число, второе, результат
+        int a, b, res;
         boolean isDigitalOperation = false;
         String[] splittedString = input.split(" ");
 
@@ -61,17 +54,18 @@ public class Calculator {
 
         if (Character.isDigit(splittedString[0].charAt(0)) &&
                 Character.isDigit(splittedString[2].charAt(0))) {
-            // если а и б начинаются с цифр
+                // если а и б начинаются с цифр, то:
             a = Integer.parseInt(splittedString[0]);
             if (a < 1 || a > 10) throw new RuntimeException();
 
             b = Integer.parseInt(splittedString[2]);
             if (b < 1 || b > 10) throw new RuntimeException();
-
-            isDigitalOperation = true; // флаг для парсера
-
-        } else {
-            for (int i = 0; i < 3; i += 2) { // проверяем на возможность конвертации
+                // флаг для парсера, истина - результат не конвертируем
+            isDigitalOperation = true;
+        }
+        else {
+                // проверяем на возможность конвертации
+            for (int i = 0; i < 3; i += 2) {
                 if (!romanToArabic.containsKey(splittedString[i])) {
                     throw new RuntimeException();
                 }
@@ -83,7 +77,7 @@ public class Calculator {
             if (b > 10) throw new RuntimeException();
         }
 
-        // теперь в арабских вычисляем
+                // вычисляем привычным способом
 
         switch (splittedString[1]){
             case "*":
@@ -102,28 +96,27 @@ public class Calculator {
                 throw new RuntimeException();
         }
 
-        // проверка на необходимость обратной конвертации
+                // цифры или нет? возвращаем правильную строку-результат
         if (isDigitalOperation){
             return String.valueOf(res);
         }
         else{
-            if (res < 0) throw new RuntimeException();
+            if (res < 1) throw new RuntimeException();
             return convertToRoman(res);
         }
 
     }
 
-    // метод только для конвертации результата
+                // метод только для конвертации результата
     public static String convertToRoman(int value){
 
         if (value == 100) return "C";
-
+                // десятки и единицы запускаем на конвертацию
         int des = value - (value % 10), ed = value % 10;
-        // десятки и единицы запускаем на конвертацию
         String sDes = "", sEd = "";
-        for (Map.Entry<String, Integer> entry : romanToArabic.entrySet()){
 
-            // если не видим ключа, строка пустая. Иначе десятки + единицы
+        for (Map.Entry<String, Integer> entry : romanToArabic.entrySet()){
+                // если не видим ключа, строка пустая. Иначе десятки + единицы
             if (entry.getValue() == des) sDes = entry.getKey();
             if (entry.getValue() == ed) sEd = entry.getKey();
 
